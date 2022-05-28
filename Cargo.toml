@@ -1,0 +1,10 @@
+[package]
+name = "netop"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+netraffic = "0.1.0"
+tui = "0.18"
+crossterm = "0.23"
+unicode-width = "0.1"
