@@ -1,3 +1,4 @@
+use crate::{runner::InputMode, App};
 use tui::{
     backend::Backend,
     layout::{Constraint, Direction, Layout},
@@ -7,9 +8,6 @@ use tui::{
     widgets::{Axis, Block, Borders, Chart, Dataset, GraphType, Paragraph, Sparkline, Tabs},
     Frame,
 };
-use unicode_width::UnicodeWidthStr;
-
-use crate::{runner::InputMode, App};
 
 pub fn draw<B: Backend>(f: &mut Frame<B>, app: &App) {
     let chunks = Layout::default()
@@ -60,21 +58,6 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, app: &App) {
         })
         .block(Block::default().borders(Borders::ALL).title("Input"));
     f.render_widget(input, chunks[1]);
-    match app.input_mode {
-        InputMode::Normal =>
-            // Hide the cursor. `Frame` does this by default, so we don't need to do anything here
-            {}
-
-        InputMode::Editing => {
-            // Make the cursor visible and ask tui-rs to put it at the specified coordinates after rendering
-            f.set_cursor(
-                // Put cursor past the end of the input text
-                chunks[1].x + app.input.width() as u16 + 1,
-                // Move one line down, from the border to the input line
-                chunks[1].y + 1,
-            )
-        }
-    }
 
     let titles = app
         .rules

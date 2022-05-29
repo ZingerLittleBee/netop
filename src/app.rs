@@ -21,8 +21,8 @@ pub struct App {
     pub y_bounds: [f64; 2],
 }
 
-impl Default for App {
-    fn default() -> App {
+impl App {
+    pub fn new() -> Self {
         App {
             input: String::new(),
             input_mode: InputMode::Normal,
@@ -37,9 +37,6 @@ impl Default for App {
             y_bounds: [0.0, 10.0],
         }
     }
-}
-
-impl App {
     pub fn next(&mut self) {
         self.index = (self.index + 1) % self.chart.len();
     }
