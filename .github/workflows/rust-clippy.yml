@@ -30,7 +30,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install Rust toolchain
-        uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af #@v1
+        uses: actions-rs/toolchain@88dc2356392166efad76775c878094f4e83ff746 #@v1
         with:
           profile: minimal
           toolchain: stable
