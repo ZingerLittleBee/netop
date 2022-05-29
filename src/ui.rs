@@ -89,6 +89,7 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, app: &App) {
     let sparkline = Sparkline::default()
         .block(Block::default().title("Packet").borders(Borders::ALL))
         .data(&app.chart)
+        .max(1800)
         .style(Style::default().fg(Color::Red));
     f.render_widget(sparkline, chunks[0]);
 
@@ -104,17 +105,10 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, app: &App) {
         ),
     ];
     let datasets = vec![Dataset::default()
-        .name(format!(
-            "{}MB/s",
-            if app.net_speed.len() > 0 {
-                app.net_speed.last().unwrap().1
-            } else {
-                0.0
-            }
-        ))
+        .name(&app.current_speed)
         .marker(symbols::Marker::Braille)
         .style(Style::default().fg(Color::Cyan))
-        .graph_type(GraphType::Scatter)
+        .graph_type(GraphType::Line)
         .data(&app.net_speed)];
 
     let chart = Chart::new(datasets)
@@ -130,21 +124,21 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, app: &App) {
         )
         .x_axis(
             Axis::default()
-                .title("X Axis")
+                .title("s")
                 .style(Style::default().fg(Color::Gray))
                 .labels(x_labels)
                 .bounds(app.window),
         )
         .y_axis(
             Axis::default()
-                .title("Y Axis")
+                .title("MB/s")
                 .style(Style::default().fg(Color::Gray))
                 .labels(vec![
                     Span::styled(
                         app.y_bounds[0].to_string(),
                         Style::default().add_modifier(Modifier::BOLD),
                     ),
-                    Span::raw(format!("{:.0}", (app.y_bounds[0] + app.y_bounds[1]) / 2.0)),
+                    Span::raw(format!("{:.1}", (app.y_bounds[0] + app.y_bounds[1]) / 2.0)),
                     Span::styled(
                         app.y_bounds[1].to_string(),
                         Style::default().add_modifier(Modifier::BOLD),

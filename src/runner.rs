@@ -55,40 +55,18 @@ fn run_app<B: Backend>(
     mut app: App,
     tick_rate: Duration,
 ) -> io::Result<()> {
-    let mut last_tick = Instant::now();
+    let mut speed_last_tick = Instant::now();
+    let mut packet_last_tick = Instant::now();
     loop {
         terminal.draw(|f| ui::draw(f, &app))?;
-        if app.rules.len() > 0 && last_tick.elapsed() >= Duration::from_millis(1000) {
-            let current_rule = &app.rules[app.index];
-            if app.chart.len() >= 100 {
-                app.chart.pop();
-            }
-            app.chart.insert(
-                0,
-                app.traffic
-                    .clone()
-                    .get_data()
-                    .get(current_rule)
-                    .unwrap()
-                    .len,
-            );
-            let total = app
-                .traffic
-                .clone()
-                .get_data()
-                .get(current_rule)
-                .unwrap()
-                .total;
-            if app.net_speed.len() >= 100 {
-                app.window[0] += 1.0;
-                app.window[1] += 1.0;
-                app.net_speed.remove(0);
-            }
-            app.net_speed
-                .push((app.second as f64, (total - app.last_total) as f64));
-            app.last_total = total;
-            app.second += 1;
-            last_tick = Instant::now();
+        if app.rules.len() > 0 && speed_last_tick.elapsed() >= Duration::from_millis(1000) {
+            app.on_speed_tick();
+            speed_last_tick = Instant::now();
+        }
+
+        if app.rules.len() > 0 && packet_last_tick.elapsed() >= Duration::from_millis(500) {
+            app.on_packet_tick();
+            packet_last_tick = Instant::now();
         }
 
         if event::poll(tick_rate)? {
