@@ -1,18 +1,19 @@
 use crate::{runner::InputMode, App};
 use tui::{
     backend::Backend,
-    layout::{Constraint, Direction, Layout},
+    layout::{Constraint, Corner, Direction, Layout},
     style::{Color, Modifier, Style},
     symbols,
     text::{Span, Spans, Text},
-    widgets::{Axis, Block, Borders, Chart, Dataset, GraphType, Paragraph, Sparkline, Tabs},
+    widgets::{
+        Axis, Block, Borders, Chart, Dataset, GraphType, List, ListItem, Paragraph, Sparkline, Tabs,
+    },
     Frame,
 };
 
 pub fn draw<B: Backend>(f: &mut Frame<B>, app: &App) {
     let chunks = Layout::default()
         .direction(Direction::Vertical)
-        .margin(2)
         .constraints(
             [
                 Constraint::Length(1),
@@ -62,13 +63,7 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, app: &App) {
     let titles = app
         .rules
         .iter()
-        .map(|t| {
-            let (first, rest) = t.split_at(1);
-            Spans::from(vec![
-                Span::styled(first, Style::default().fg(Color::Yellow)),
-                Span::styled(rest, Style::default().fg(Color::Green)),
-            ])
-        })
+        .map(|t| Spans::from(vec![Span::styled(t, Style::default().fg(Color::Green))]))
         .collect();
     let tabs = Tabs::new(titles)
         .block(Block::default().borders(Borders::ALL).title("Rules"))
@@ -77,7 +72,7 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, app: &App) {
         .highlight_style(
             Style::default()
                 .add_modifier(Modifier::BOLD)
-                .bg(Color::Black),
+                .fg(Color::Yellow),
         );
     f.render_widget(tabs, chunks[2]);
 
@@ -86,28 +81,63 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, app: &App) {
         .constraints([Constraint::Percentage(50), Constraint::Percentage(50)].as_ref())
         .split(chunks[3]);
 
+    let lower_left = Layout::default()
+        .direction(Direction::Horizontal)
+        .constraints([Constraint::Percentage(50), Constraint::Percentage(50)].as_ref())
+        .split(chunks[0]);
+
+    let events: Vec<ListItem> = app
+        .totals
+        .iter()
+        .rev()
+        .map(|total| {
+            // let header = Spans::from(vec![
+            //     Span::styled("Time", Style::default().fg(Color::Yellow)),
+            //     Span::raw(" "),
+            //     Span::styled("Size", Style::default().add_modifier(Modifier::ITALIC)),
+            // ]);
+            ListItem::new(vec![
+                Spans::from(vec![
+                    Span::styled(total.clone().0, Style::default().fg(Color::Yellow)),
+                    Span::raw(" ".repeat(lower_left[0].width as usize - 20)),
+                    Span::styled(
+                        App::format_speed(total.1 as f64, false),
+                        Style::default()
+                            .fg(Color::Blue)
+                            .add_modifier(Modifier::ITALIC),
+                    ),
+                ]),
+                Spans::from("-".repeat(lower_left[0].width as usize - 1)),
+            ])
+        })
+        .collect();
+    let events_list = List::new(events)
+        .block(Block::default().borders(Borders::ALL).title("Total"))
+        .start_corner(Corner::BottomLeft);
+    f.render_widget(events_list, lower_left[0]);
+
     let sparkline = Sparkline::default()
         .block(Block::default().title("Packet").borders(Borders::ALL))
         .data(&app.chart)
         .max(1800)
         .style(Style::default().fg(Color::Red));
-    f.render_widget(sparkline, chunks[0]);
+    f.render_widget(sparkline, lower_left[1]);
 
     let x_labels = vec![
         Span::styled(
-            format!("{}", app.window[0]),
+            format!("{}s", app.window[0]),
             Style::default().add_modifier(Modifier::BOLD),
         ),
-        Span::raw(format!("{}", (app.window[0] + app.window[1]) / 2.0)),
+        Span::raw(format!("{}s", (app.window[0] + app.window[1]) / 2.0)),
         Span::styled(
-            format!("{}", app.window[1]),
+            format!("{}s", app.window[1]),
             Style::default().add_modifier(Modifier::BOLD),
         ),
     ];
     let datasets = vec![Dataset::default()
-        .name(&app.current_speed)
+        .name(format!("speed: {}", &app.current_speed))
         .marker(symbols::Marker::Braille)
-        .style(Style::default().fg(Color::Cyan))
+        .style(Style::default().fg(Color::Green))
         .graph_type(GraphType::Line)
         .data(&app.net_speed)];
 
@@ -117,34 +147,36 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, app: &App) {
                 .title(Span::styled(
                     "Speed",
                     Style::default()
-                        .fg(Color::Cyan)
+                        .fg(Color::Green)
                         .add_modifier(Modifier::BOLD),
                 ))
                 .borders(Borders::ALL),
         )
         .x_axis(
             Axis::default()
-                .title("s")
                 .style(Style::default().fg(Color::Gray))
                 .labels(x_labels)
                 .bounds(app.window),
         )
         .y_axis(
             Axis::default()
-                .title("MB/s")
                 .style(Style::default().fg(Color::Gray))
                 .labels(vec![
                     Span::styled(
-                        app.y_bounds[0].to_string(),
+                        format!("{:.1}MB/s", app.y_bounds[0]),
                         Style::default().add_modifier(Modifier::BOLD),
                     ),
-                    Span::raw(format!("{:.1}", (app.y_bounds[0] + app.y_bounds[1]) / 2.0)),
+                    Span::raw(format!(
+                        "{:.1}MB/s",
+                        (app.y_bounds[0] + app.y_bounds[1]) / 2.0
+                    )),
                     Span::styled(
-                        app.y_bounds[1].to_string(),
+                        format!("{:.1}MB/s", app.y_bounds[1]),
                         Style::default().add_modifier(Modifier::BOLD),
                     ),
                 ])
                 .bounds(app.y_bounds),
-        );
+        )
+        .hidden_legend_constraints((Constraint::Percentage(90), Constraint::Percentage(90)));
     f.render_widget(chart, chunks[1]);
 }

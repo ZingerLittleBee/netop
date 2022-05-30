@@ -66,6 +66,7 @@ fn run_app<B: Backend>(
 
         if app.rules.len() > 0 && packet_last_tick.elapsed() >= Duration::from_millis(500) {
             app.on_packet_tick();
+            app.on_total_tick();
             packet_last_tick = Instant::now();
         }
 
