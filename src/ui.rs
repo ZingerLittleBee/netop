@@ -73,7 +73,8 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, apps: &mut Apps) {
         .highlight_style(
             Style::default()
                 .add_modifier(Modifier::BOLD)
-                .fg(Color::Yellow),
+                .fg(Color::Yellow)
+                .bg(Color::Black),
         );
     f.render_widget(tabs, chunks[2]);
 
