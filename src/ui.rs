@@ -91,11 +91,6 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, app: &App) {
         .iter()
         .rev()
         .map(|total| {
-            // let header = Spans::from(vec![
-            //     Span::styled("Time", Style::default().fg(Color::Yellow)),
-            //     Span::raw(" "),
-            //     Span::styled("Size", Style::default().add_modifier(Modifier::ITALIC)),
-            // ]);
             ListItem::new(vec![
                 Spans::from(vec![
                     Span::styled(total.clone().0, Style::default().fg(Color::Yellow)),
@@ -104,7 +99,8 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, app: &App) {
                         App::format_speed(total.1 as f64, false),
                         Style::default()
                             .fg(Color::Blue)
-                            .add_modifier(Modifier::ITALIC),
+                            .add_modifier(Modifier::ITALIC)
+                            .add_modifier(Modifier::BOLD),
                     ),
                 ]),
                 Spans::from("-".repeat(lower_left[0].width as usize - 1)),

@@ -21,12 +21,11 @@ pub struct App {
     pub chart: Vec<u64>,
     /// Speed array, unit MB/s
     pub net_speed: Vec<(f64, f64)>,
-    /// recalculate Y axis when max_speed remove
-    pub max_speed: f64,
     /// Speed xAxis range
     pub window: [f64; 2],
     pub last_total: u64,
     pub second: u64,
+    /// speed chart Y xAxis range
     pub y_bounds: [f64; 2],
     pub current_speed: String,
     /// (timestamp, total)
@@ -43,12 +42,11 @@ impl App {
             rules: Vec::new(),
             chart: Vec::new(),
             net_speed: Vec::new(),
-            max_speed: 0.0,
             window: [0.0, 100.0],
             last_total: 0,
             second: 0,
             y_bounds: [0.0, 1.0],
-            current_speed: "0.0B/s".to_string(),
+            current_speed: "0 B/s".to_string(),
             totals: Vec::new(),
         }
     }
@@ -91,15 +89,25 @@ impl App {
         if self.net_speed.len() >= 100 {
             self.window[0] += 1.0;
             self.window[1] += 1.0;
-            self.net_speed.remove(0);
+            let remove_speed = self.net_speed.remove(0);
+            if remove_speed.1 == self.y_bounds[1] {
+                self.y_bounds[1] = self
+                    .net_speed
+                    .iter()
+                    .max_by(|a, b| a.1.partial_cmp(&b.1).unwrap())
+                    .unwrap()
+                    .1;
+                if self.y_bounds[1] < 1.0 {
+                    self.y_bounds[1] = 1.0;
+                }
+            }
         }
         let current_byte = (total - self.last_total) as f64;
         let new_speed: f64 = format!("{:.2}", current_byte / 1000.0 / 1000.0)
             .parse()
             .unwrap();
         if new_speed > self.y_bounds[1] {
-            self.y_bounds[1] = format!("{:.1}", new_speed).parse().unwrap();
-            self.max_speed = new_speed;
+            self.y_bounds[1] = new_speed;
         }
         self.net_speed.push((self.second as f64, new_speed));
         self.current_speed = App::format_speed(current_byte, true);
@@ -126,30 +134,30 @@ impl App {
         let byte_to_kb = Advance::Byte2KB as isize as f64;
         if byte >= byte_to_tb {
             format!(
-                "{:.1} TB{}",
+                "{:.2} TB{}",
                 byte / byte_to_tb,
                 if is_second { "/s" } else { "" }
             )
         } else if byte >= byte_to_gb {
             format!(
-                "{:.1} GB{}",
+                "{:.2} GB{}",
                 byte / byte_to_gb,
                 if is_second { "/s" } else { "" }
             )
         } else if byte >= byte_to_mb {
             format!(
-                "{:.1} MB{}",
+                "{:.2} MB{}",
                 byte / byte_to_mb,
                 if is_second { "/s" } else { "" }
             )
         } else if byte >= byte_to_kb {
             format!(
-                "{:.1} KB{}",
+                "{:.2} KB{}",
                 byte / byte_to_kb,
                 if is_second { "/s" } else { "" }
             )
         } else {
-            format!("{:.1} B{}", byte, if is_second { "/s" } else { "" })
+            format!("{} B{}", byte, if is_second { "/s" } else { "" })
         }
     }
 }
