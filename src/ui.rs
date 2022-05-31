@@ -1,4 +1,4 @@
-use crate::{runner::InputMode, App};
+use crate::{app::Apps, runner::InputMode};
 use tui::{
     backend::Backend,
     layout::{Constraint, Corner, Direction, Layout},
@@ -11,7 +11,8 @@ use tui::{
     Frame,
 };
 
-pub fn draw<B: Backend>(f: &mut Frame<B>, app: &App) {
+pub fn draw<B: Backend>(f: &mut Frame<B>, apps: &mut Apps) {
+    let app = apps.app_map.get_mut(&apps.rules[apps.index]).unwrap();
     let chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints(
@@ -25,7 +26,7 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, app: &App) {
         )
         .split(f.size());
 
-    let (msg, style) = match app.input_mode {
+    let (msg, style) = match apps.input_mode {
         InputMode::Normal => (
             vec![
                 Span::raw("Press "),
@@ -52,22 +53,22 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, app: &App) {
     let help_message = Paragraph::new(text);
     f.render_widget(help_message, chunks[0]);
 
-    let input = Paragraph::new(app.input.as_ref())
-        .style(match app.input_mode {
+    let input = Paragraph::new(apps.input.as_ref())
+        .style(match apps.input_mode {
             InputMode::Normal => Style::default(),
             InputMode::Editing => Style::default().fg(Color::Yellow),
         })
         .block(Block::default().borders(Borders::ALL).title("Input"));
     f.render_widget(input, chunks[1]);
 
-    let titles = app
+    let titles = apps
         .rules
         .iter()
         .map(|t| Spans::from(vec![Span::styled(t, Style::default().fg(Color::Green))]))
         .collect();
     let tabs = Tabs::new(titles)
         .block(Block::default().borders(Borders::ALL).title("Rules"))
-        .select(app.index)
+        .select(apps.index)
         .style(Style::default().fg(Color::Cyan))
         .highlight_style(
             Style::default()
@@ -96,7 +97,7 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, app: &App) {
                     Span::styled(total.clone().0, Style::default().fg(Color::Yellow)),
                     Span::raw(" ".repeat(lower_left[0].width as usize - 20)),
                     Span::styled(
-                        App::format_speed(total.1 as f64, false),
+                        Apps::format_speed(total.1 as f64, false),
                         Style::default()
                             .fg(Color::Blue)
                             .add_modifier(Modifier::ITALIC)

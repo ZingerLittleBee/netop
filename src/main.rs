@@ -1,7 +1,6 @@
 mod app;
 mod runner;
 mod ui;
-use app::App;
 use runner::run;
 use std::{error::Error, time::Duration};
 

@@ -15,7 +15,10 @@ use tui::{
     Terminal,
 };
 
-use crate::{app::App, ui};
+use crate::{
+    app::{App, Apps},
+    ui,
+};
 
 pub enum InputMode {
     Normal,
@@ -31,8 +34,8 @@ pub fn run(tick_rate: Duration) -> Result<(), Box<dyn Error>> {
     let mut terminal = Terminal::new(backend)?;
 
     // create app and run it
-    let app = App::new();
-    let res = run_app(&mut terminal, app, tick_rate);
+    let mut apps = Apps::new();
+    let res = run_app(&mut terminal, &mut apps, tick_rate);
 
     // restore terminal
     disable_raw_mode()?;
@@ -52,30 +55,30 @@ pub fn run(tick_rate: Duration) -> Result<(), Box<dyn Error>> {
 
 fn run_app<B: Backend>(
     terminal: &mut Terminal<B>,
-    mut app: App,
+    apps: &mut Apps,
     tick_rate: Duration,
 ) -> io::Result<()> {
     let mut speed_last_tick = Instant::now();
     let mut packet_last_tick = Instant::now();
     loop {
-        terminal.draw(|f| ui::draw(f, &app))?;
-        if app.rules.len() > 0 && speed_last_tick.elapsed() >= Duration::from_millis(1000) {
-            app.on_speed_tick();
+        terminal.draw(|f| ui::draw(f, apps))?;
+        if apps.rules.len() > 0 && speed_last_tick.elapsed() >= Duration::from_millis(1000) {
+            apps.on_speed_tick();
             speed_last_tick = Instant::now();
         }
 
-        if app.rules.len() > 0 && packet_last_tick.elapsed() >= Duration::from_millis(500) {
-            app.on_packet_tick();
-            app.on_total_tick();
+        if apps.rules.len() > 0 && packet_last_tick.elapsed() >= Duration::from_millis(500) {
+            apps.on_packet_tick();
+            apps.on_total_tick();
             packet_last_tick = Instant::now();
         }
 
         if event::poll(tick_rate)? {
             if let Event::Key(key) = event::read()? {
-                match app.input_mode {
+                match apps.input_mode {
                     InputMode::Normal => match key.code {
                         KeyCode::Char('e') => {
-                            app.input_mode = InputMode::Editing;
+                            apps.input_mode = InputMode::Editing;
                         }
                         KeyCode::Char('q') => {
                             return Ok(());
@@ -84,20 +87,24 @@ fn run_app<B: Backend>(
                     },
                     InputMode::Editing => match key.code {
                         KeyCode::Enter => {
-                            let input: String = app.input.drain(..).collect();
-                            app.rules.push(input.clone());
-                            app.traffic
-                                .add_listener(Filter::new("en0".to_string(), input));
+                            let input: String = apps.input.drain(..).collect();
+                            apps.rules.push(input.clone());
+                            let app = App::new();
+                            apps.traffic
+                                .add_listener(Filter::new("en0".to_string(), input.clone()));
+                            apps.app_map.insert(input.clone(), app);
                         }
                         KeyCode::Char(c) => {
-                            app.input.push(c);
+                            apps.input.push(c);
                         }
                         KeyCode::Backspace => {
-                            app.input.pop();
+                            apps.input.pop();
                         }
                         KeyCode::Esc => {
-                            app.input_mode = InputMode::Normal;
+                            apps.input_mode = InputMode::Normal;
                         }
+                        KeyCode::Right => apps.next(),
+                        KeyCode::Left => apps.previous(),
                         _ => {}
                     },
                 }
