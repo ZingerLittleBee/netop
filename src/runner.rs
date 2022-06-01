@@ -1,3 +1,4 @@
+use std::io::Write;
 use std::{
     error::Error,
     io,
@@ -35,6 +36,15 @@ pub fn run(tick_rate: Duration) -> Result<(), Box<dyn Error>> {
 
     // create app and run it
     let mut apps = Apps::new();
+    // handle panic
+    let original_hook = std::panic::take_hook();
+    let should_stop = apps.should_stop.clone();
+    std::panic::set_hook(Box::new(move |panic| {
+        execute!(io::stdout(), LeaveAlternateScreen).unwrap();
+        let mut t = should_stop.write().unwrap();
+        original_hook(panic);
+        *t = true;
+    }));
     let res = run_app(&mut terminal, &mut apps, tick_rate);
 
     // restore terminal
@@ -47,7 +57,7 @@ pub fn run(tick_rate: Duration) -> Result<(), Box<dyn Error>> {
     terminal.show_cursor()?;
 
     if let Err(err) = res {
-        println!("{:?}", err)
+        writeln!(io::stderr(), "Error: {}", err)?;
     }
 
     Ok(())
@@ -60,8 +70,14 @@ fn run_app<B: Backend>(
 ) -> io::Result<()> {
     let mut speed_last_tick = Instant::now();
     let mut packet_last_tick = Instant::now();
+    let should_stop = apps.should_stop.clone();
     loop {
+        if *should_stop.read().unwrap() {
+            return Err(io::Error::new(io::ErrorKind::InvalidInput, ""));
+        }
+
         terminal.draw(|f| ui::draw(f, apps))?;
+
         if apps.rules.len() > 0 && speed_last_tick.elapsed() >= Duration::from_millis(1000) {
             apps.on_speed_tick();
             speed_last_tick = Instant::now();

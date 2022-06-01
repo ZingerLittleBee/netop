@@ -1,4 +1,7 @@
-use std::collections::HashMap;
+use std::{
+    collections::HashMap,
+    sync::{Arc, RwLock},
+};
 
 use chrono::Local;
 use netraffic::{Filter, Traffic};
@@ -23,6 +26,7 @@ pub struct Apps {
     /// Current input mode
     pub input_mode: InputMode,
     pub traffic: Traffic,
+    pub should_stop: Arc<RwLock<bool>>,
 }
 
 impl Apps {
@@ -36,6 +40,7 @@ impl Apps {
             input: String::new(),
             input_mode: InputMode::Normal,
             traffic,
+            should_stop: Arc::new(RwLock::new(false)),
         }
     }
 
