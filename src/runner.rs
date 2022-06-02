@@ -26,7 +26,7 @@ pub enum InputMode {
     Editing,
 }
 
-pub fn run(tick_rate: Duration) -> Result<(), Box<dyn Error>> {
+pub fn run(tick_rate: Duration, interface_name: String) -> Result<(), Box<dyn Error>> {
     // setup terminal
     enable_raw_mode()?;
     let mut stdout = io::stdout();
@@ -35,7 +35,7 @@ pub fn run(tick_rate: Duration) -> Result<(), Box<dyn Error>> {
     let mut terminal = Terminal::new(backend)?;
 
     // create app and run it
-    let mut apps = Apps::new();
+    let mut apps = Apps::new(interface_name);
     // handle panic
     let original_hook = std::panic::take_hook();
     let should_stop = apps.should_stop.clone();
@@ -106,8 +106,10 @@ fn run_app<B: Backend>(
                             let input: String = apps.input.drain(..).collect();
                             apps.rules.push(input.clone());
                             let app = App::new();
-                            apps.traffic
-                                .add_listener(Filter::new("en0".to_string(), input.clone()));
+                            apps.traffic.add_listener(Filter::new(
+                                apps.interface_name.to_string(),
+                                input.clone(),
+                            ));
                             apps.app_map.insert(input.clone(), app);
                         }
                         KeyCode::Char(c) => {

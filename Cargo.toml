@@ -8,3 +8,4 @@ netraffic = "0.1.0"
 tui = "0.18"
 crossterm = "0.23"
 chrono = "0.4"
+clap = { version = "3.1.18", features = ["derive"] }

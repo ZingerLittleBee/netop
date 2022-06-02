@@ -27,12 +27,13 @@ pub struct Apps {
     pub input_mode: InputMode,
     pub traffic: Traffic,
     pub should_stop: Arc<RwLock<bool>>,
+    pub interface_name: String,
 }
 
 impl Apps {
-    pub fn new() -> Self {
+    pub fn new(interface_name: String) -> Self {
         let mut traffic = Traffic::new();
-        traffic.add_listener(Filter::new("en0".to_string(), "".to_string()));
+        traffic.add_listener(Filter::new(interface_name.clone(), "".to_string()));
         Apps {
             rules: vec!["All".to_string()],
             app_map: HashMap::from([("All".to_string(), App::new())]),
@@ -41,6 +42,7 @@ impl Apps {
             input_mode: InputMode::Normal,
             traffic,
             should_stop: Arc::new(RwLock::new(false)),
+            interface_name,
         }
     }
 
