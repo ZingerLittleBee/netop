@@ -3,7 +3,7 @@ use std::{
     sync::{Arc, RwLock},
 };
 
-use chrono::Local;
+use chrono::{DateTime, Local};
 use netraffic::{Filter, Traffic};
 
 use crate::runner::InputMode;
@@ -156,6 +156,7 @@ pub struct App {
     pub current_speed: String,
     /// (timestamp, total)
     pub totals: Vec<(String, u64)>,
+    pub start_time: DateTime<Local>,
 }
 
 impl App {
@@ -170,6 +171,7 @@ impl App {
             y_bounds: [0.0, 1.0],
             current_speed: "0 B/s".to_string(),
             totals: Vec::new(),
+            start_time: Local::now(),
         }
     }
 

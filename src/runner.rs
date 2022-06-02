@@ -99,6 +99,8 @@ fn run_app<B: Backend>(
                         KeyCode::Char('q') => {
                             return Ok(());
                         }
+                        KeyCode::Right => apps.next(),
+                        KeyCode::Left => apps.previous(),
                         _ => {}
                     },
                     InputMode::Editing => match key.code {

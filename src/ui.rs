@@ -1,12 +1,14 @@
 use crate::{app::Apps, runner::InputMode};
+use chrono::Local;
 use tui::{
     backend::Backend,
-    layout::{Constraint, Corner, Direction, Layout},
+    layout::{Alignment, Constraint, Corner, Direction, Layout},
     style::{Color, Modifier, Style},
     symbols,
     text::{Span, Spans, Text},
     widgets::{
-        Axis, Block, Borders, Chart, Dataset, GraphType, List, ListItem, Paragraph, Sparkline, Tabs,
+        Axis, Block, Borders, Chart, Dataset, GraphType, List, ListItem, Paragraph, Sparkline,
+        Tabs, Wrap,
     },
     Frame,
 };
@@ -61,12 +63,12 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, apps: &mut Apps) {
         .block(Block::default().borders(Borders::ALL).title("Input"));
     f.render_widget(input, chunks[1]);
 
-    let titles = apps
+    let tab_items = apps
         .rules
         .iter()
         .map(|t| Spans::from(vec![Span::styled(t, Style::default().fg(Color::Green))]))
         .collect();
-    let tabs = Tabs::new(titles)
+    let tabs = Tabs::new(tab_items)
         .block(Block::default().borders(Borders::ALL).title("Rules"))
         .select(apps.index)
         .style(Style::default().fg(Color::Cyan))
@@ -88,7 +90,77 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, apps: &mut Apps) {
         .constraints([Constraint::Percentage(50), Constraint::Percentage(50)].as_ref())
         .split(chunks[0]);
 
-    let events: Vec<ListItem> = app
+    let overview_chunk = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints([Constraint::Percentage(40), Constraint::Percentage(60)].as_ref())
+        .split(lower_left[0]);
+
+    let overview_text = vec![
+        Spans::from(""),
+        Spans::from(vec![
+            Span::styled(
+                "Interface:  ",
+                Style::default().fg(Color::Cyan).add_modifier(Modifier::DIM),
+            ),
+            Span::styled(
+                apps.interface_name.to_string(),
+                Style::default()
+                    .fg(Color::Cyan)
+                    .add_modifier(Modifier::ITALIC),
+            ),
+        ]),
+        Spans::from(""),
+        Spans::from(vec![
+            Span::styled(
+                "Start Time: ",
+                Style::default().fg(Color::Cyan).add_modifier(Modifier::DIM),
+            ),
+            Span::styled(
+                app.start_time.format("%Y-%m-%d %H:%M:%S").to_string(),
+                Style::default()
+                    .fg(Color::Cyan)
+                    .add_modifier(Modifier::ITALIC),
+            ),
+        ]),
+        Spans::from(""),
+        Spans::from(vec![
+            Span::styled(
+                "Uptime:     ",
+                Style::default().fg(Color::Cyan).add_modifier(Modifier::DIM),
+            ),
+            Span::styled(
+                format!(
+                    "{}d {}h {}m {}s",
+                    Local::now()
+                        .signed_duration_since(app.start_time)
+                        .num_days(),
+                    Local::now()
+                        .signed_duration_since(app.start_time)
+                        .num_hours()
+                        % 24,
+                    Local::now()
+                        .signed_duration_since(app.start_time)
+                        .num_minutes()
+                        % 60,
+                    Local::now()
+                        .signed_duration_since(app.start_time)
+                        .num_seconds()
+                        % 60
+                ),
+                Style::default()
+                    .fg(Color::Cyan)
+                    .add_modifier(Modifier::ITALIC),
+            ),
+        ]),
+    ];
+
+    let overview = Paragraph::new(overview_text)
+        .block(Block::default().borders(Borders::ALL).title("Overview"))
+        .alignment(Alignment::Left)
+        .wrap(Wrap { trim: true });
+    f.render_widget(overview, overview_chunk[0]);
+
+    let total_items: Vec<ListItem> = app
         .totals
         .iter()
         .rev()
@@ -109,24 +181,27 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, apps: &mut Apps) {
             ])
         })
         .collect();
-    let events_list = List::new(events)
+    let total_list = List::new(total_items)
         .block(Block::default().borders(Borders::ALL).title("Total"))
         .start_corner(Corner::BottomLeft);
-    f.render_widget(events_list, lower_left[0]);
+    f.render_widget(total_list, overview_chunk[1]);
 
-    let sparkline = Sparkline::default()
+    let packet_chart = Sparkline::default()
         .block(Block::default().title("Packet").borders(Borders::ALL))
         .data(&app.chart)
         .max(1800)
         .style(Style::default().fg(Color::Red));
-    f.render_widget(sparkline, lower_left[1]);
+    f.render_widget(packet_chart, lower_left[1]);
 
     let x_labels = vec![
         Span::styled(
             format!("{}s", app.window[0]),
             Style::default().add_modifier(Modifier::BOLD),
         ),
-        Span::raw(format!("{}s", (app.window[0] + app.window[1]) / 2.0)),
+        Span::styled(
+            format!("{}s", (app.window[0] + app.window[1]) / 2.0),
+            Style::default().add_modifier(Modifier::BOLD),
+        ),
         Span::styled(
             format!("{}s", app.window[1]),
             Style::default().add_modifier(Modifier::BOLD),
@@ -139,7 +214,7 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, apps: &mut Apps) {
         .graph_type(GraphType::Line)
         .data(&app.net_speed)];
 
-    let chart = Chart::new(datasets)
+    let speed_chart = Chart::new(datasets)
         .block(
             Block::default()
                 .title(Span::styled(
@@ -164,10 +239,10 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, apps: &mut Apps) {
                         format!("{:.1}MB/s", app.y_bounds[0]),
                         Style::default().add_modifier(Modifier::BOLD),
                     ),
-                    Span::raw(format!(
-                        "{:.1}MB/s",
-                        (app.y_bounds[0] + app.y_bounds[1]) / 2.0
-                    )),
+                    Span::styled(
+                        format!("{:.1}MB/s", (app.y_bounds[0] + app.y_bounds[1]) / 2.0),
+                        Style::default().add_modifier(Modifier::BOLD),
+                    ),
                     Span::styled(
                         format!("{:.1}MB/s", app.y_bounds[1]),
                         Style::default().add_modifier(Modifier::BOLD),
@@ -176,5 +251,5 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, apps: &mut Apps) {
                 .bounds(app.y_bounds),
         )
         .hidden_legend_constraints((Constraint::Percentage(90), Constraint::Percentage(90)));
-    f.render_widget(chart, chunks[1]);
+    f.render_widget(speed_chart, chunks[1]);
 }
