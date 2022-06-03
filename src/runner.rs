@@ -40,7 +40,7 @@ pub fn run(tick_rate: Duration, interface_name: String) -> Result<(), Box<dyn Er
     let original_hook = std::panic::take_hook();
     let should_stop = apps.should_stop.clone();
     std::panic::set_hook(Box::new(move |panic| {
-        execute!(io::stdout(), LeaveAlternateScreen).unwrap();
+        execute!(io::stdout(), LeaveAlternateScreen, DisableMouseCapture).unwrap();
         let mut t = should_stop.write().unwrap();
         original_hook(panic);
         *t = true;

@@ -19,10 +19,10 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, apps: &mut Apps) {
         .direction(Direction::Vertical)
         .constraints(
             [
-                Constraint::Length(1),
-                Constraint::Length(3),
-                Constraint::Length(3),
-                Constraint::Length(3),
+                Constraint::Max(1),
+                Constraint::Max(3),
+                Constraint::Max(3),
+                Constraint::Length(10),
             ]
             .as_ref(),
         )
@@ -32,9 +32,21 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, apps: &mut Apps) {
         InputMode::Normal => (
             vec![
                 Span::raw("Press "),
-                Span::styled("q", Style::default().add_modifier(Modifier::BOLD)),
+                Span::styled(
+                    "q",
+                    Style::default()
+                        .fg(Color::Cyan)
+                        .add_modifier(Modifier::BOLD)
+                        .add_modifier(Modifier::ITALIC),
+                ),
                 Span::raw(" to exit, "),
-                Span::styled("e", Style::default().add_modifier(Modifier::BOLD)),
+                Span::styled(
+                    "e",
+                    Style::default()
+                        .fg(Color::Cyan)
+                        .add_modifier(Modifier::BOLD)
+                        .add_modifier(Modifier::ITALIC),
+                ),
                 Span::raw(" to start editing."),
             ],
             Style::default().add_modifier(Modifier::RAPID_BLINK),
@@ -42,10 +54,22 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, apps: &mut Apps) {
         InputMode::Editing => (
             vec![
                 Span::raw("Press "),
-                Span::styled("Esc", Style::default().add_modifier(Modifier::BOLD)),
+                Span::styled(
+                    "Esc",
+                    Style::default()
+                        .fg(Color::Cyan)
+                        .add_modifier(Modifier::BOLD)
+                        .add_modifier(Modifier::ITALIC),
+                ),
                 Span::raw(" to stop editing, "),
-                Span::styled("Enter", Style::default().add_modifier(Modifier::BOLD)),
-                Span::raw(" to record the message"),
+                Span::styled(
+                    "Enter",
+                    Style::default()
+                        .fg(Color::Cyan)
+                        .add_modifier(Modifier::BOLD)
+                        .add_modifier(Modifier::ITALIC),
+                ),
+                Span::raw(" to record the rule."),
             ],
             Style::default(),
         ),
@@ -96,7 +120,6 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, apps: &mut Apps) {
         .split(lower_left[0]);
 
     let overview_text = vec![
-        Spans::from(""),
         Spans::from(vec![
             Span::styled(
                 "Interface:  ",
@@ -168,7 +191,11 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, apps: &mut Apps) {
             ListItem::new(vec![
                 Spans::from(vec![
                     Span::styled(total.clone().0, Style::default().fg(Color::Yellow)),
-                    Span::raw(" ".repeat(lower_left[0].width as usize - 20)),
+                    Span::raw(" ".repeat(if lower_left[0].width > 20 as u16 {
+                        lower_left[0].width as usize - 20
+                    } else {
+                        1
+                    })),
                     Span::styled(
                         Apps::format_speed(total.1 as f64, false),
                         Style::default()
@@ -177,7 +204,7 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, apps: &mut Apps) {
                             .add_modifier(Modifier::BOLD),
                     ),
                 ]),
-                Spans::from("-".repeat(lower_left[0].width as usize - 1)),
+                Spans::from("-".repeat(lower_left[0].width as usize - 4)),
             ])
         })
         .collect();
