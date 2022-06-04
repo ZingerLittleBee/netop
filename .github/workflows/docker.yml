@@ -2,7 +2,8 @@ name: Docker Images CI
 on:
     push:
         tags:
-            - V0.0.*
+            - '*'
+    workflow_dispatch:
 jobs:
     docker:
         runs-on: ubuntu-latest
