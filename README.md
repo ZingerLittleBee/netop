@@ -15,5 +15,10 @@ netop is a command line interface for observing network traffic
 
 
 ## How to use
+
+```bash
+docker run -it --rm --net=host netop
+```
+
 - Press `e` to input [bpf rule](https://biot.com/capstats/bpf.html), and then press `enter`
 - Use the `<-` or `->` to switch between different rules
