@@ -42,3 +42,30 @@ docker run -it --rm --net=host zingerbee/netop
 
 - 按 `e` 输入新 [bpf](https://biot.com/capstats/bpf.html) 规则 , 回车确认
 - 使用方向键 `<-` 和 `->` 在不同规则间切换
+
+### 查看帮助
+```bash
+docker run -it --rm --net=host zingerbee/netop -h
+```
+输出如下
+```bash
+netop 0.1.0
+
+USAGE:
+    netop [OPTIONS]
+
+OPTIONS:
+    -h, --help           打印帮助信息
+    -n, --name <NAME>    指定网卡运行
+    -V, --version        打印版本信息
+```
+
+### 指定网卡运行
+> 参数为**网卡名称**
+>
+> *unix: 使用 `ifconfig` 查看所有网卡信息
+>
+> windows: 使用 `ipconfig` 查看所有网卡信息
+```bash
+docker run -it --rm --net=host zingerbee/netop -n eth0
+```

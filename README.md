@@ -41,3 +41,30 @@ docker run -it --rm --net=host zingerbee/netop
 
 - Press `e` to input [bpf rule](https://biot.com/capstats/bpf.html), and then press `enter`
 - Use the `<-` or `->` to switch between different rules
+
+### View help
+```bash
+docker run -it --rm --net=host zingerbee/netop -h
+```
+Output as follows
+```bash
+netop 0.1.0
+
+USAGE:
+    netop [OPTIONS]
+
+OPTIONS:
+    -h, --help           Print help information
+    -n, --name <NAME>    Name of Network Interface Card
+    -V, --version        Print version information
+```
+
+### Designated network interface card running
+> The parameter is **name of network interface card**
+>
+> *unix: Use `ifconfig` to view network interface cards information
+>
+> windows: Use `ipconfig` to view network interface cards information
+```bash
+docker run -it --rm --net=host zingerbee/netop -n eth0
+```
