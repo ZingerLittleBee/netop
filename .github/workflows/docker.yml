@@ -23,7 +23,26 @@ jobs:
               uses: docker/build-push-action@v3
               with:
                   context: .
-                  platforms: linux/amd64,linux/arm64
+                  # platforms: linux/amd64,linux/arm64
+                  # can not compile linux/arm64v8 in Github Action
+                  #
+                  # Manually compile
+                  # 1. Build mirror images of different platforms
+                  # - `docker build -t zingerbee/amd64-netop -f deploy/Dockerfile .` in amd64 CPU
+                  # - `docker build -t zingerbee/arm64v8-netop -f deploy/Dockerfile .` in arm64v8 CPU
+                  # 2. Push mirror images to DockerHub
+                  # `docker login`
+                  # - `docker push zingerbee/amd64-netop`
+                  # - `docker push zingerbee/arm64v8-netop`
+                  # 3. Create manifest
+                  # `docker manifest create zingerbee/netop zingerbee/amd64-netop zingerbee/arm64v8-netop`
+                  # 4. Set manifest
+                  # - `docker manifest annotate zingerbee/netop zingerbee/amd64-netop --os linux --arch amd64`
+                  # - `docker manifest annotate zingerbee/netop zingerbee/arm64v8-netop --os linux --arch arm64 --variant v8`
+                  # (Optional) Inspect manifest
+                  # `docker manifest inspect zingerbee/netop`
+                  # 5. Push manifest
+                  # `docker manifest push zingerbee/netop`
                   file: ./deploy/Dockerfile
                   push: true
                   tags: zingerbee/netop:latest
