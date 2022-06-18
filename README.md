@@ -35,6 +35,7 @@ Language : 🇺🇸 English | [🇨🇳 简体中文](./README.zh-CN.md)
 
 
 ## How to use
+### Docker
 ```bash
 docker run -it --rm --net=host zingerbee/netop
 ```
@@ -67,6 +68,17 @@ OPTIONS:
 > windows: Use `ipconfig` to view network interface cards information
 ```bash
 docker run -it --rm --net=host zingerbee/netop -n eth0
+```
+
+### Cargo
+need `rust` and `pcap`, detail look at [How to build](#how-to-build)
+```bash
+# install
+sudo cargo install netop
+# and then run
+netop
+# or designated network interface card running
+netop -n eth0
 ```
 
 ## How to build

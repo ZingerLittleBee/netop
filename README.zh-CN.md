@@ -36,6 +36,7 @@ Language : [🇺🇸 English](./README.md) | 🇨🇳 简体中文
 
 
 ## 如何使用
+### Docker
 ```bash
 docker run -it --rm --net=host zingerbee/netop
 ```
@@ -69,6 +70,18 @@ OPTIONS:
 ```bash
 docker run -it --rm --net=host zingerbee/netop -n eth0
 ```
+
+### Cargo
+需要 `rust` and `pcap`, 具体查看 [如何构建](#如何构建)
+```bash
+# 安装
+sudo cargo install netop
+# 运行
+netop
+# 或者指定网卡运行
+netop -n eth0
+```
+
 
 ## 如何构建
 开发环境

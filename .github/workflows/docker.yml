@@ -45,4 +45,5 @@ jobs:
                   # `docker manifest push zingerbee/netop`
                   file: ./deploy/Dockerfile
                   push: true
-                  tags: zingerbee/netop:latest
+                  # `zingerbee/arm64v8-netop:latest` need manually compile and publish
+                  tags: zingerbee/amd64-netop:latest
