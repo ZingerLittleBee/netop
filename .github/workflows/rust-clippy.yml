@@ -12,6 +12,13 @@ name: rust-clippy analyze
 on:
   push:
     branches: [ main ]
+    paths-ignore:
+      - '**/*.md'
+      - LICENSE
+      - '**/*.gitignore'
+      - .editorconfig
+      - deploy/**
+      - .github/**
   pull_request:
     # The branches below must be a subset of the branches above
     branches: [ main ]
