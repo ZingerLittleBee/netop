@@ -81,6 +81,19 @@ netop
 netop -n eth0
 ```
 
+### NetBSD
+On NetBSD there's an official package available.
+To install a pre-compiled binary, simply run
+```bash
+pkgin install netop
+```
+
+Or, if you prefer to build it from source,
+```bash
+cd /usr/pkgsrc/net/netop
+make install
+```
+
 ## How to build
 Development environment
 - It is best to be `root` user, `pcap` requires permissions
