@@ -68,3 +68,18 @@ OPTIONS:
 ```bash
 docker run -it --rm --net=host zingerbee/netop -n eth0
 ```
+
+## How to build
+Development environment
+- It is best to be `root` user, `pcap` requires permissions
+- `rust` >= 1.40.0
+- `pcap`
+    - Ubuntu、Debian: `apt install libpcap-dev`
+    - MacOS: installed by default
+    - Windows: Download the [WinPcap](https://www.winpcap.org/install/default.htm) Developer's Pack. Add the /Lib or /Lib/x64 folder to your LIB environment variable.
+
+```bash
+sudo cargo install --path .
+# or
+sudo cargo run
+```

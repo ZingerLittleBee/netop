@@ -69,3 +69,18 @@ OPTIONS:
 ```bash
 docker run -it --rm --net=host zingerbee/netop -n eth0
 ```
+
+## 如何构建
+开发环境
+- 最好是 `root` 用户, `pcap` 需要权限
+- `rust` >= 1.40.0
+- `pcap`
+  - Ubuntu、Debian: `apt install libpcap-dev`
+  - MacOS: 系统自带
+  - Windows: 下载 [WinPcap](https://www.winpcap.org/install/default.htm) 开发者包, 添加 `/Lib` 或 `/Lib/x64` 目录到系统环境变量中
+
+```bash
+sudo cargo install --path .
+# or
+sudo cargo run
+```
