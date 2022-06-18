@@ -2,6 +2,13 @@
 name = "netop"
 version = "0.1.0"
 edition = "2021"
+categories = ["network-programming", "command-line-interface"]
+keywords = ["cli", "network", "traffic", "statistics", "pcap"]
+homepage = "https://github.com/ZingerLittleBee/netop"
+repository = "https://github.com/ZingerLittleBee/netop"
+description = "netop is a terminal command line interface that can customize the filter network traffic rule 🎯"
+readme = "README.md"
+license = "MIT"
 
 [dependencies]
 netraffic = "0.1.0"
