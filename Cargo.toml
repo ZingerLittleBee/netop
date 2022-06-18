@@ -9,6 +9,7 @@ repository = "https://github.com/ZingerLittleBee/netop"
 description = "netop is a terminal command line interface that can customize the filter network traffic rule 🎯"
 readme = "README.md"
 license = "MIT"
+exclude = ["snapshot", "deploy", ".github", "renovate.json"]
 
 [dependencies]
 netraffic = "0.1.0"
