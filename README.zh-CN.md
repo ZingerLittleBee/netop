@@ -82,6 +82,11 @@ netop
 netop -n eth0
 ```
 
+### NetBSD
+在 `NetBSD` 上有官方软件包, 要安装预编译的二进制文件，只需运行
+```bash
+pkgin install netop
+```
 
 ## 如何构建
 开发环境
