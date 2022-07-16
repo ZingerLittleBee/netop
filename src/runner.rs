@@ -70,6 +70,7 @@ fn run_app<B: Backend>(
 ) -> io::Result<()> {
     let mut speed_last_tick = Instant::now();
     let mut packet_last_tick = Instant::now();
+    let mut last_char_d = Instant::now();
     let should_stop = apps.should_stop.clone();
     loop {
         if *should_stop.read().unwrap() {
@@ -99,6 +100,12 @@ fn run_app<B: Backend>(
                         KeyCode::Char('q') => {
                             return Ok(());
                         }
+                        KeyCode::Char('d') => {
+                            if last_char_d.elapsed() < Duration::from_millis(500) {
+                                apps.on_delete_rule();
+                            }
+                            last_char_d = Instant::now();
+                        }
                         KeyCode::Right => apps.next(),
                         KeyCode::Left => apps.previous(),
                         _ => {}
@@ -106,13 +113,14 @@ fn run_app<B: Backend>(
                     InputMode::Editing => match key.code {
                         KeyCode::Enter => {
                             let input: String = apps.input.drain(..).collect();
+                            let rule = Apps::special_rule(&input);
                             apps.rules.push(input.clone());
                             let app = App::new();
                             apps.traffic.add_listener(Filter::new(
                                 apps.interface_name.to_string(),
-                                input.clone(),
+                                rule,
                             ));
-                            apps.app_map.insert(input.clone(), app);
+                            apps.app_map.insert(input, app);
                         }
                         KeyCode::Char(c) => {
                             apps.input.push(c);

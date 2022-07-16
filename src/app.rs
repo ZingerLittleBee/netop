@@ -84,6 +84,18 @@ impl Apps {
         });
     }
 
+    pub fn on_delete_rule(&mut self) {
+        if self.rules.len() > 1 {
+            self.app_map.remove(&self.rules[self.index]);
+            self.rules.remove(self.index);
+            self.index = if self.index > 0 {
+                self.index - 1
+            } else {
+                0
+            };
+        }
+    }
+
     pub fn next(&mut self) {
         self.index = if self.index == self.rules.len() - 1 {
             0
@@ -100,8 +112,8 @@ impl Apps {
         };
     }
 
-    fn special_rule(rule: &String) -> String {
-        if rule == "All" {
+    pub fn special_rule(rule: &String) -> String {
+        if rule.to_lowercase() == "all" {
             String::from("")
         } else {
             rule.to_string()
