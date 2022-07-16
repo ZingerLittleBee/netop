@@ -78,12 +78,12 @@ fn run_app<B: Backend>(
 
         terminal.draw(|f| ui::draw(f, apps))?;
 
-        if apps.rules.len() > 0 && speed_last_tick.elapsed() >= Duration::from_millis(1000) {
+        if !apps.rules.is_empty() && speed_last_tick.elapsed() >= Duration::from_millis(1000) {
             apps.on_speed_tick();
             speed_last_tick = Instant::now();
         }
 
-        if apps.rules.len() > 0 && packet_last_tick.elapsed() >= Duration::from_millis(500) {
+        if !apps.rules.is_empty() && packet_last_tick.elapsed() >= Duration::from_millis(500) {
             apps.on_packet_tick();
             apps.on_total_tick();
             packet_last_tick = Instant::now();

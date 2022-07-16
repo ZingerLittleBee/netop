@@ -191,7 +191,7 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, apps: &mut Apps) {
             ListItem::new(vec![
                 Spans::from(vec![
                     Span::styled(total.clone().0, Style::default().fg(Color::Yellow)),
-                    Span::raw(" ".repeat(if lower_left[0].width > 20 as u16 {
+                    Span::raw(" ".repeat(if lower_left[0].width > 20 {
                         lower_left[0].width as usize - 20
                     } else {
                         1
