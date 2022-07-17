@@ -33,19 +33,48 @@ Language : [🇺🇸 English](./README.md) | 🇨🇳 简体中文
 - 资源占用小，`Rust` 编写
 - `docker` 部署
 
+## 安装
 
-
-## 如何使用
 ### Docker
 ```bash
 docker run -it --rm --net=host zingerbee/netop
 ```
 
-- 按 `e` 输入新 [bpf](https://biot.com/capstats/bpf.html) 规则 , 回车确认
+### Cargo
+需要 `rust` 和 `pcap`, 具体查看 [如何构建](#如何从源码构建)
+```bash
+# 安装
+sudo cargo install netop
+# 运行
+netop
+# 或者指定网卡运行
+netop -n eth0
+```
+
+### NetBSD
+在 `NetBSD` 上有官方软件包, 要安装预编译的二进制文件，只需运行
+```bash
+pkgin install netop
+```
+
+或者，如果你喜欢从源代码构建它
+```bash
+cd /usr/pkgsrc/net/netop
+make install
+```
+
+## 如何使用
+
+- 按 `e` **进入编辑模式**, 输入新 [bpf](https://biot.com/capstats/bpf.html) 规则, **回车**确认
+- 按 `Esc` **退出编辑模式**
 - 使用方向键 `<-` 和 `->` 在不同规则间切换
+- 不在编辑模式下, 按 `dd` 删除当前规则
+- 不在编辑模式下, 按 `q` 退出程序
 
 ### 查看帮助
 ```bash
+netop -h
+# docker
 docker run -it --rm --net=host zingerbee/netop -h
 ```
 输出如下
@@ -68,27 +97,12 @@ OPTIONS:
 >
 > windows: 使用 `ipconfig` 查看所有网卡信息
 ```bash
+netop -n eth0
+# docker
 docker run -it --rm --net=host zingerbee/netop -n eth0
 ```
 
-### Cargo
-需要 `rust` and `pcap`, 具体查看 [如何构建](#如何构建)
-```bash
-# 安装
-sudo cargo install netop
-# 运行
-netop
-# 或者指定网卡运行
-netop -n eth0
-```
-
-### NetBSD
-在 `NetBSD` 上有官方软件包, 要安装预编译的二进制文件，只需运行
-```bash
-pkgin install netop
-```
-
-## 如何构建
+## 如何从源码构建
 开发环境
 - 最好是 `root` 用户, `pcap` 需要权限
 - `rust` >= 1.40.0
@@ -98,7 +112,11 @@ pkgin install netop
   - Windows: 下载 [WinPcap](https://www.winpcap.org/install/default.htm) 开发者包, 添加 `/Lib` 或 `/Lib/x64` 目录到系统环境变量中
 
 ```bash
-sudo cargo install --path .
-# or
+# clone
+git clone https://github.com/ZingerLittleBee/netop.git
+# run
 sudo cargo run
 ```
+
+## 发行说明
+SEE [CHANGELOG](./CHANGELOG.md)

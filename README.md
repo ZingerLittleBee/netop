@@ -33,45 +33,16 @@ Language : 🇺🇸 English | [🇨🇳 简体中文](./README.zh-CN.md)
 - Resource occupation is small, `rust` Written
 - Support `docker` deployment
 
+## Installation
 
-## How to use
 ### Docker
 ```bash
 docker run -it --rm --net=host zingerbee/netop
 ```
 
-- Press `e` to input [bpf rule](https://biot.com/capstats/bpf.html), and then press `enter`
-- Use the `<-` or `->` to switch between different rules
-
-### View help
-```bash
-docker run -it --rm --net=host zingerbee/netop -h
-```
-Output as follows
-```bash
-netop 0.1.0
-
-USAGE:
-    netop [OPTIONS]
-
-OPTIONS:
-    -h, --help           Print help information
-    -n, --name <NAME>    Name of Network Interface Card
-    -V, --version        Print version information
-```
-
-### Designated network interface card running
-> The parameter is **name of network interface card**
->
-> *unix: Use `ifconfig` to view network interface cards information
->
-> windows: Use `ipconfig` to view network interface cards information
-```bash
-docker run -it --rm --net=host zingerbee/netop -n eth0
-```
 
 ### Cargo
-need `rust` and `pcap`, detail look at [How to build](#how-to-build)
+need `rust` and `pcap`, detail look at [How to build](#How-to-build-from-source)
 ```bash
 # install
 sudo cargo install netop
@@ -94,7 +65,46 @@ cd /usr/pkgsrc/net/netop
 make install
 ```
 
-## How to build
+## How to use
+
+- Press `e` to **enter edit mode** input [bpf rule](https://biot.com/capstats/bpf.html), and then press `enter`
+- Press `Esc` to **exit edit mode**
+- Use the `<-` or `->` to switch between different rules
+- Not in edit mode, press `dd` to delete current rule
+- Not in edit mode, press `q` to quit
+
+### View help
+```bash
+netop -h
+# docker
+docker run -it --rm --net=host zingerbee/netop -h
+```
+Output as follows
+```bash
+netop 0.1.0
+
+USAGE:
+    netop [OPTIONS]
+
+OPTIONS:
+    -h, --help           Print help information
+    -n, --name <NAME>    Name of Network Interface Card
+    -V, --version        Print version information
+```
+
+### Designated network interface card running
+> The parameter is **name of network interface card**
+>
+> *unix: Use `ifconfig` to view network interface cards information
+>
+> windows: Use `ipconfig` to view network interface cards information
+```bash
+netop -n eth0
+# docker
+docker run -it --rm --net=host zingerbee/netop -n eth0
+```
+
+## How to build from source
 Development environment
 - It is best to be `root` user, `pcap` requires permissions
 - `rust` >= 1.40.0
@@ -108,3 +118,6 @@ sudo cargo install --path .
 # or
 sudo cargo run
 ```
+
+## Release Notes
+SEE [CHANGELOG](./CHANGELOG.md)
