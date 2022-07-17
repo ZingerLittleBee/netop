@@ -47,7 +47,15 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, apps: &mut Apps) {
                         .add_modifier(Modifier::BOLD)
                         .add_modifier(Modifier::ITALIC),
                 ),
-                Span::raw(" to start editing."),
+                Span::raw(" to start editing, "),
+                Span::styled(
+                    "dd",
+                    Style::default()
+                        .fg(Color::Cyan)
+                        .add_modifier(Modifier::BOLD)
+                        .add_modifier(Modifier::ITALIC),
+                ),
+                Span::raw(" to delete rule."),
             ],
             Style::default().add_modifier(Modifier::RAPID_BLINK),
         ),
