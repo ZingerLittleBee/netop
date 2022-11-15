@@ -47,7 +47,15 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, apps: &mut Apps) {
                         .add_modifier(Modifier::BOLD)
                         .add_modifier(Modifier::ITALIC),
                 ),
-                Span::raw(" to start editing."),
+                Span::raw(" to start editing, "),
+                Span::styled(
+                    "dd",
+                    Style::default()
+                        .fg(Color::Cyan)
+                        .add_modifier(Modifier::BOLD)
+                        .add_modifier(Modifier::ITALIC),
+                ),
+                Span::raw(" to delete rule."),
             ],
             Style::default().add_modifier(Modifier::RAPID_BLINK),
         ),
@@ -191,7 +199,7 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, apps: &mut Apps) {
             ListItem::new(vec![
                 Spans::from(vec![
                     Span::styled(total.clone().0, Style::default().fg(Color::Yellow)),
-                    Span::raw(" ".repeat(if lower_left[0].width > 20 as u16 {
+                    Span::raw(" ".repeat(if lower_left[0].width > 20 {
                         lower_left[0].width as usize - 20
                     } else {
                         1

@@ -4,7 +4,7 @@ use std::{
 };
 
 use chrono::{DateTime, Local};
-use netraffic::{Filter, Traffic};
+use netraffic::{Filter, Snapshot, Traffic};
 
 use crate::runner::InputMode;
 
@@ -58,15 +58,20 @@ impl Apps {
         });
     }
 
+    fn get_total(data: HashMap<String, Snapshot>, real_rule: &String) -> u64 {
+        if data.get(real_rule).is_some() {
+            data.get(real_rule).unwrap().total
+        } else {
+            0
+        }
+    }
+
     pub fn on_speed_tick(&mut self) {
         self.rules.iter().for_each(|rule| {
             let real_rule = Apps::special_rule(rule);
             let app = self.app_map.get_mut(rule).unwrap();
-            app.on_speed_tick(if self.traffic.get_data().get(&real_rule).is_some() {
-                self.traffic.get_data().get(&real_rule).unwrap().total
-            } else {
-                0
-            })
+            let total = Apps::get_total(self.traffic.get_data(), &real_rule);
+            app.on_speed_tick(total)
         });
     }
 
@@ -74,12 +79,21 @@ impl Apps {
         self.rules.iter().for_each(|rule| {
             let real_rule = Apps::special_rule(rule);
             let app = self.app_map.get_mut(rule).unwrap();
-            app.on_total_tick(if self.traffic.get_data().get(&real_rule).is_some() {
-                self.traffic.get_data().get(&real_rule).unwrap().total
+            let total = Apps::get_total(self.traffic.get_data(), &real_rule);
+            app.on_total_tick(total)
+        });
+    }
+
+    pub fn on_delete_rule(&mut self) {
+        if self.rules.len() > 1 {
+            self.app_map.remove(&self.rules[self.index]);
+            self.rules.remove(self.index);
+            self.index = if self.index > 0 {
+                self.index - 1
             } else {
                 0
-            })
-        });
+            };
+        }
     }
 
     pub fn next(&mut self) {
@@ -98,8 +112,8 @@ impl Apps {
         };
     }
 
-    fn special_rule(rule: &String) -> String {
-        if rule == "All" {
+    pub fn special_rule(rule: &String) -> String {
+        if rule.to_lowercase() == "all" {
             String::from("")
         } else {
             rule.to_string()
