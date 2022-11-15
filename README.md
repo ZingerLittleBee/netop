@@ -119,5 +119,8 @@ sudo cargo install --path .
 sudo cargo run
 ```
 
+## Found an issue or have a proposal
+[Create an issue](https://github.com/ZingerLittleBee/netop/issues)
+
 ## Release Notes
 SEE [CHANGELOG](./CHANGELOG.md)

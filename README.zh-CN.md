@@ -68,8 +68,8 @@ make install
 - 按 `e` **进入编辑模式**, 输入新 [bpf](https://biot.com/capstats/bpf.html) 规则, **回车**确认
 - 按 `Esc` **退出编辑模式**
 - 使用方向键 `<-` 和 `->` 在不同规则间切换
-- 不在编辑模式下, 按 `dd` 删除当前规则
-- 不在编辑模式下, 按 `q` 退出程序
+- 在非编辑模式下, 按 `dd` 删除当前规则
+- 在非编辑模式下, 按 `q` 退出程序
 
 ### 查看帮助
 ```bash
@@ -117,6 +117,9 @@ git clone https://github.com/ZingerLittleBee/netop.git
 # run
 sudo cargo run
 ```
+
+## 发现问题或提出建议
+[Create an issue](https://github.com/ZingerLittleBee/netop/issues)
 
 ## 发行说明
 SEE [CHANGELOG](./CHANGELOG.md)
