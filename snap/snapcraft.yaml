@@ -1,0 +1,42 @@
+name: netop
+adopt-info: netop
+summary: netop is a terminal CLI that can customize the filter network traffic rule
+description: |
+  netop is a terminal command line interface that can customize the filter network traffic rule dart
+  Features
+    Use the bpf rule filter
+    Multi-rule switching
+    Real-time rate
+    Total traffic
+    Response UI
+    Resource occupation is small, rust Written
+    Support docker deployment
+
+license: MIT
+base: core20
+grade: stable
+confinement: strict
+compression: lzo
+
+apps:
+  netop:
+    command: bin/netop
+    plugs:
+      - network
+      - network-control
+      - hardware-observe
+
+parts:
+  netop:
+    source: https://github.com/ZingerLittleBee/netop
+    source-type: git
+    plugin: rust
+    override-pull: |
+      snapcraftctl pull
+      snapcraftctl set-version "$(git describe --tags | sed 's/^v//')"
+    
+    build-packages:
+      - libpcap-dev
+    
+    stage-packages:
+      - libpcap-dev
