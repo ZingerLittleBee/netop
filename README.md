@@ -3,17 +3,17 @@ Language : 🇺🇸 English | [🇨🇳 简体中文](./README.zh-CN.md)
 <h1 align="center">netop</h1>
 <div align="center">
 
-[![Docker Pulls](https://img.shields.io/docker/pulls/zingerbee/netop?style=flat)](https://hub.docker.com/r/zingerbee/netop)
-[![Docker Image Size](https://img.shields.io/docker/image-size/zingerbee/netop)](https://hub.docker.com/r/zingerbee/netop/tags)
-[![Docker Image Version (latest by date)](https://img.shields.io/docker/v/zingerbee/netop)](https://hub.docker.com/r/zingerbee/netop/tags)
+[![Docker Pulls](https://img.shields.io/docker/pulls/zingerbee/netop?style=flat-square)](https://hub.docker.com/r/zingerbee/netop)
+[![Docker Image Size](https://img.shields.io/docker/image-size/zingerbee/netop?style=flat-square)](https://hub.docker.com/r/zingerbee/netop/tags)
+[![Docker Image Version (latest by date)](https://img.shields.io/docker/v/zingerbee/netop?style=flat-square)](https://hub.docker.com/r/zingerbee/netop/tags)
 
 </div>
 
 <div align="center">
 
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ZingerLittleBee/netop/Docker%20Images%20CI)](https://github.com/ZingerLittleBee/netop/actions)
-[![Last Commit](https://img.shields.io/github/last-commit/ZingerLittleBee/netop)](https://github.com/ZingerLittleBee/netop/commits/main)
-[![LICENSE](https://img.shields.io/crates/l/port-selector)](./LICENSE)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/ZingerLittleBee/netop/publish.yml?style=flat-square)](https://github.com/ZingerLittleBee/netop/actions)
+[![Last Commit](https://img.shields.io/github/last-commit/ZingerLittleBee/netop?style=flat-square)](https://github.com/ZingerLittleBee/netop/commits/main)
+[![LICENSE](https://img.shields.io/crates/l/netop?style=flat-square)](./LICENSE)
 
 </div>
 
