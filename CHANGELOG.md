@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [`0.1.2`] - 2023-06-03
+
+### Chore
+- Update dependencies
+
+## [`0.1.1`] - 2022-11-16
+
+### Features
+
+- Add `dd` to delete rule
+- Add special rule `all`
+
 ## [`0.1.0`] - 2022-06-18
 
 ### Features
@@ -13,9 +25,3 @@ All notable changes to this project will be documented in this file.
 - Response UI
 - Support docker deployment
 
-## [`0.1.1`] - Unreleased
-
-### Features
-
-- Add `dd` to delete rule
-- Add special rule `all`
