@@ -11,10 +11,8 @@ use crossterm::{
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
 };
 use netraffic::Filter;
-use tui::{
-    backend::{Backend, CrosstermBackend},
-    Terminal,
-};
+use ratatui::backend::{Backend, CrosstermBackend};
+use ratatui::Terminal;
 
 use crate::{
     app::{App, Apps},

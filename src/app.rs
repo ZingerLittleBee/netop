@@ -8,11 +8,12 @@ use netraffic::{Filter, Snapshot, Traffic};
 
 use crate::runner::InputMode;
 
+#[repr(u64)]
 enum Advance {
-    Byte2TB = 1000 * 1000 * 1000 * 1000,
-    Byte2GB = 1000 * 1000 * 1000,
-    Byte2MB = 1000 * 1000,
-    Byte2KB = 1000,
+    Byte2TB = 1000 * 1000 * 1000 * 1000u64,
+    Byte2GB = 1000 * 1000 * 1000u64,
+    Byte2MB = 1000 * 1000u64,
+    Byte2KB = 1000u64,
 }
 
 pub struct Apps {
