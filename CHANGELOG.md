@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [`0.1.3`] - 2023-12-18
+
+### Chore
+- Migrate to ratatui
+
+
 ## [`0.1.2`] - 2023-06-03
 
 ### Chore
