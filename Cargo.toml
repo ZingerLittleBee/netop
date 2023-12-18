@@ -1,6 +1,6 @@
 [package]
 name = "netop"
-version = "0.1.2"
+version = "0.1.4"
 edition = "2021"
 categories = ["network-programming", "command-line-interface"]
 keywords = ["cli", "network", "traffic", "statistics", "pcap"]
@@ -13,7 +13,7 @@ exclude = ["snapshot", "deploy", ".github", "renovate.json"]
 
 [dependencies]
 netraffic = "0.1.0"
-tui = "0.19"
-crossterm = "0.26"
+crossterm = "0.27.0"
 chrono = "0.4"
-clap = { version = "4.4.8", features = ["derive"] }
+clap = { version = "4.3.1", features = ["derive"] }
+ratatui = "0.24.0"

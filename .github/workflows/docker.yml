@@ -23,7 +23,7 @@ jobs:
               uses: docker/build-push-action@v4
               with:
                   context: .
-                  # platforms: linux/amd64,linux/arm64
+                  platforms: linux/amd64,linux/arm64
                   # can not compile linux/arm64v8 in Github Action
                   #
                   # Manually compile
@@ -46,4 +46,4 @@ jobs:
                   file: ./deploy/Dockerfile
                   push: true
                   # `zingerbee/arm64v8-netop:latest` need manually compile and publish
-                  tags: zingerbee/amd64-netop:latest
+                  tags: zingerbee/netop:latest

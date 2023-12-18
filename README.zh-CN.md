@@ -79,7 +79,7 @@ docker run -it --rm --net=host zingerbee/netop -h
 ```
 输出如下
 ```bash
-netop 0.1.0
+netop 0.1.4
 
 USAGE:
     netop [OPTIONS]
