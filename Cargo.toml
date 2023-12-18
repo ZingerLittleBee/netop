@@ -1,6 +1,6 @@
 [package]
 name = "netop"
-version = "0.1.3"
+version = "0.1.4"
 edition = "2021"
 categories = ["network-programming", "command-line-interface"]
 keywords = ["cli", "network", "traffic", "statistics", "pcap"]
