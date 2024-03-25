@@ -15,5 +15,5 @@ exclude = ["snapshot", "deploy", ".github", "renovate.json"]
 netraffic = "0.1.0"
 crossterm = "0.27.0"
 chrono = "0.4"
-clap = { version = "4.4.11", features = ["derive"] }
+clap = { version = "4.5.4", features = ["derive"] }
 ratatui = "0.25.0"
