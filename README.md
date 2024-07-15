@@ -65,6 +65,10 @@ cd /usr/pkgsrc/net/netop
 make install
 ```
 
+### Arch Linux
+[AUR](https://aur.archlinux.org/packages/netop)
+> Thanks to @kemelzaidan for the contribution!
+
 ## How to use
 
 - Press `e` to **enter edit mode** input [bpf rule](https://biot.com/capstats/bpf.html), and then press `enter`
