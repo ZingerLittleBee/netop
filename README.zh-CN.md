@@ -63,6 +63,10 @@ cd /usr/pkgsrc/net/netop
 make install
 ```
 
+### Arch Linux
+[AUR](https://aur.archlinux.org/packages/netop)
+> 由 @kemelzaidan 提供
+
 ## 如何使用
 
 - 按 `e` **进入编辑模式**, 输入新 [bpf](https://biot.com/capstats/bpf.html) 规则, **回车**确认
